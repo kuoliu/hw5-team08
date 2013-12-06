@@ -29,8 +29,12 @@ import edu.cmu.lti.qalab.types.TestDocument;
 import edu.cmu.lti.qalab.types.Token;
 import edu.cmu.lti.qalab.utils.Utils;
 
+/**
+ * Description: Solr indexer for indexing the different fields annotated 
+ */
 public class SolrIndexer extends JCasAnnotator_ImplBase {
 
+  /** Configuration parameters **/
   int mDocNum;
 
   File mOutputFile = null;
@@ -47,7 +51,7 @@ public class SolrIndexer extends JCasAnnotator_ImplBase {
 
   double THRESHOLD = 4.0;
 
-  @Override
+  /** Initialize the parameters using the configuration files **/
   public void initialize(UimaContext context) throws ResourceInitializationException {
     serverUrl = (String) context.getConfigParameterValue("SOLR_SERVER_URL");
     coreName = (String) context.getConfigParameterValue("SOLR_CORE");
@@ -61,11 +65,12 @@ public class SolrIndexer extends JCasAnnotator_ImplBase {
 
   }
 
-  @Override
+  /**
+   * Description: add NER, nounphrase coreference, synonyms into the solr search engine
+   */
   public void process(JCas jCas) throws AnalysisEngineProcessException {
 
-    TestDocument testDoc = Utils.getTestDocumentFromCAS(jCas);// (TestDocument)
-    // jCas.getAnnotationIndex(TestDocument.type);
+    TestDocument testDoc = Utils.getTestDocumentFromCAS(jCas);
 
     try {
       // try to get indexschema so that you can know the fields available

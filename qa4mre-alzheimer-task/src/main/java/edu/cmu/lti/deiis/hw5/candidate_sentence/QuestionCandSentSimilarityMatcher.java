@@ -26,20 +26,25 @@ import edu.cmu.lti.qalab.types.TestDocument;
 import edu.cmu.lti.qalab.types.Token;
 import edu.cmu.lti.qalab.utils.Utils;
 
+/**
+ * Description: Find Cnadidate Sentences 
+ */
 public class QuestionCandSentSimilarityMatcher extends JCasAnnotator_ImplBase {
 
+  /** Configuration parameters **/
   SolrWrapper solrWrapper = null;
 
   String serverUrl;
 
-  // IndexSchema indexSchema;
   String coreName;
 
   String schemaName;
 
   int TOP_SEARCH_RESULTS = 10;
 
-  @Override
+  /**
+   * Description: Initialize the parameters according to the configuration file 
+   */
   public void initialize(UimaContext context) throws ResourceInitializationException {
     super.initialize(context);
     serverUrl = (String) context.getConfigParameterValue("SOLR_SERVER_URL");
@@ -54,7 +59,9 @@ public class QuestionCandSentSimilarityMatcher extends JCasAnnotator_ImplBase {
 
   }
 
-  @Override
+  /**
+   * Description: form queries and provide them to solr in order to get candidate sentences 
+   */
   public void process(JCas aJCas) throws AnalysisEngineProcessException {
     TestDocument testDoc = Utils.getTestDocumentFromCAS(aJCas);
     String testDocId = testDoc.getId();
@@ -68,10 +75,6 @@ public class QuestionCandSentSimilarityMatcher extends JCasAnnotator_ImplBase {
       if(question.getTarget() != null){
         synt = Utils.fromFSListToCollection(question.getTarget(), Synonym.class);
       }
-      //for(Synonym s:synt){
-       // System.out.print("Test:"+s.getText()+",");;
-      //}
-      //System.out.println();
       System.out.println("========================================================");
       System.out.println("Question: " + question.getText());
       String searchQuery = this.formSolrQuery(question);
@@ -98,8 +101,6 @@ public class QuestionCandSentSimilarityMatcher extends JCasAnnotator_ImplBase {
           String sentIdx = sentId.replace(docId, "").replace("_", "").trim();
           int idx = Integer.parseInt(sentIdx);
 
-          // Sentence annSentence=sentenceList.get(idx);
-          // System.out.println(idx);
           Sentence annSentence = null;
           if (sentenceList.size() > idx) {
             annSentence = sentenceList.get(idx);
@@ -154,8 +155,6 @@ public class QuestionCandSentSimilarityMatcher extends JCasAnnotator_ImplBase {
             String sentIdx = sentId.replace(docId, "").replace("_", "").trim();
             int idx = Integer.parseInt(sentIdx);
 
-            // Sentence annSentence=sentenceList.get(idx);
-            // System.out.println(idx);
             Sentence annSentence = null;
             if (sentenceList.size() > idx) {
               annSentence = sentenceList.get(idx);
@@ -185,7 +184,10 @@ public class QuestionCandSentSimilarityMatcher extends JCasAnnotator_ImplBase {
     }
   }
 
-public String formSolrQuery(Question question) {
+  /**
+   * Description: form solr query according to question
+   */
+  public String formSolrQuery(Question question) {
     
     String solrQuery = "";
 
@@ -224,6 +226,9 @@ public String formSolrQuery(Question question) {
     return solrQuery;
   }
 
+  /**
+   * Description: form solr query according to answers 
+   */
   public String formSolrQuery4Answer(Question question, Answer answer) {
     
     String solrQuery = "";
